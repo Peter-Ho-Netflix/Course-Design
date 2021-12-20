@@ -1,0 +1,36 @@
+{
+    "name": "神里绫华",
+    "type": "canvas",
+    "color": "#000011",
+    "width": 480,
+    "height": 400,
+    "subnodes": [
+        {
+            "name": "甘雨",
+            "type": "line",
+            "visible": true,
+            "strokeColor": "#DD0341",
+            "x1": 1,
+            "y1": 2,
+            "x2": 300,
+            "y2": 390
+        },
+        {
+            "name": "可莉",
+            "type": "ellipse",
+            "visible": true
+        },
+        {
+            "name": "七七",
+            "type": "group",
+            "visible": true,
+            "subnodes": [
+                {
+                    "name": "神里绫华",
+                    "type": "polygon",
+                    "visible": true
+                }
+            ]
+        }
+    ]
+}

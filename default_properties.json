@@ -1,0 +1,41 @@
+[
+    {
+        "id": "Lang",
+        "type": "selectEnum",
+        "name": "语言",
+        "canTranslate": true, 
+        "dataArray": ["中文", "English", "日本語"], 
+        "dataCanTranslate": false,
+        "value": 0
+    },
+    {
+        "id": "meixuan",
+        "type": "check",
+        "name": "寐璇",
+        "canTranslate": true, 
+        "value": true
+    }, 
+    {
+        "id": "jiangnan", 
+        "type": "intNum",
+        "name": "姜楠",
+        "canTranslate": true,
+        "value": 13
+    },
+    {
+        "id": "style",
+        "type": "selectEnum", 
+        "name": "主题模式", 
+        "canTranslate": true, 
+        "dataArray": ["暗黑", "明亮", "跟随系统"], 
+        "dataCanTranslate": true, 
+        "value": 0
+    }, 
+    {
+        "id": "klee", 
+        "type": "text",
+        "name": "可莉",
+        "canTranslate": true,
+        "value": "可莉"
+    }
+]
