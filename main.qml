@@ -6,6 +6,7 @@ import Kamisato_Ayaka 2.12
 import Yoimiya 2.12
 import Raiden_Shogun 2.15
 
+//主窗体
 Window {
     id: window
     width: 640
@@ -37,11 +38,11 @@ Window {
     property variant strokeStyleDef: color_rect.border.color
     property var currentItemArray: [] //当前item的选中指令
 
-
+//选项页
     PropertiesWindow {
         id: pWindow
     }
-
+    //图层页
     Pane {
         id: layerpane
         x: 474
@@ -105,7 +106,7 @@ Window {
             }
         }
     }
-
+//属性页
     Pane {
         id: propertypane
         x: 474
@@ -128,6 +129,9 @@ Window {
             anchors.bottomMargin: 0
             anchors.rightMargin: 0
             property var rootModel: jsonGraphics
+            onRootModelChanged: {
+
+            }
 
             Label {
                 id: graphictype
@@ -255,7 +259,7 @@ Window {
             }
         }
     }
-
+//绘图区
     Pane {
         id: drawarea
         anchors.left: parent.left
@@ -269,7 +273,7 @@ Window {
         anchors.topMargin: 65
         anchors.leftMargin: 23
         Drag.active: drawarea_motion.drag.active
-        //画图对象
+        //画布
         MouseArea {
             id: drawarea_motion
             width: jsonGraphics.width
@@ -303,6 +307,9 @@ Window {
                     console.log(drawrequest, " in canvas")
                     switch(drawrequest)
                     {
+                    case "point":
+                        drawPoint(graBuffer.x, graBuffer.y)
+                        break
                     case "line":
                         drawLine(graBuffer.x1, graBuffer.y1, graBuffer.x2, graBuffer.y2)
                         console.log("绘制直线")
@@ -334,6 +341,11 @@ Window {
                     ctx.strokeStyle=myModel.strokeColor
                     switch(myModel.type)
                     {
+                    case "point":
+                        ctx.fillStyle=myModel.strokeColor
+                        ctx.strokeStyle="transparent"
+                        ctx.fillRect(myModel.x-1, myModel.y-1, 2, 2)
+                        break
                     case "line":
                         ctx.fillStyle="transparent"
                         ctx.moveTo(myModel.x1, myModel.y1)
@@ -365,6 +377,13 @@ Window {
                     }
                     ctx.fill()
                     ctx.stroke()
+                    ctx.closePath()
+                }
+                function drawPoint(x, y)
+                {
+                    ctx.beginPath()
+                    ctx.fillStyle=strokeStyleDef
+                    ctx.fillRect(x-1, y-1, 2, 2)
                     ctx.closePath()
                 }
 
@@ -603,7 +622,13 @@ Window {
                 console.log("击杀悠米")
                 console.log(mouseMode)
                 infoLabel.text=""
-                if(mouseMode=="line" || mouseMode=="ellipse"||(mouseMode=="curve"&&drawarea_canvas.drawMode))
+                if(mouseMode=="point")
+                {
+                    drawarea_canvas.graBuffer.x=mouseX
+                    drawarea_canvas.graBuffer.y=mouseY
+                }
+
+                if(mouseMode=="line" || mouseMode=="ellipse"||(mouseMode=="curve"&&drawarea_canvas.drawMode||mouseMode=="point"))
                 {
                     drawarea_canvas.completeGraphics()
                     drawarea_canvas.drawMode=false
@@ -678,7 +703,7 @@ Window {
                     infoLabel.text="缩放"+nowX/originalX+", "+nowY/originalY
                 }
                 else
-                    infoLabel.text="缩放不可"+ originalX===0? "x=0": "y=0"
+                    infoLabel.text="缩放不可"+ (originalX===0? "x=0": "y=0")
             }
             function scaleGraphicsXY(mChangeModel, mx, my, 图形缓存=图形变换缓存)
             {
@@ -716,7 +741,7 @@ Window {
             //drag.target: parent
         }
     }
-
+//工具栏
     ToolBar {
         id: toolBar
         y: 21
@@ -762,10 +787,38 @@ Window {
                 rotation: -180
             }
         }
+        ToolButton {
+            id: pointButton
+            x: 61
+            y: 0
+            width: 28
+            height: 28
+            //text: qsTr("直线")
+            IconImage {
+                anchors.margins: 4
+                anchors.fill: parent
+                source: pointButton.checked? "img/point_selected.svg": "img/point.svg"
+            }
+            onClicked: {
+                if(!checked){
+                    checked=true
+                    lineButton.checked=false
+                    ellipseButton.checked=false
+                    polygonButton.checked=false
+                    curveButton.checked=false
+                    selectButton.checked=false
+                    rotateButton.checked=false
+                    viewEditButton.checked=false
+                    cutButton.checked=false
+                    scaleButton.checked=false
+                    mouseMode="point"
+                }
+            }
+        }
 
         ToolButton {
             id: lineButton
-            x: 61
+            x: 89
             y: 0
             width: 28
             height: 28
@@ -778,6 +831,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
                     curveButton.checked=false
@@ -793,7 +847,7 @@ Window {
 
         ToolButton {
             id: ellipseButton
-            x: 89
+            x: 117
             y: 0
             width: 28
             height: 28
@@ -806,6 +860,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     polygonButton.checked=false
                     curveButton.checked=false
@@ -821,7 +876,7 @@ Window {
 
         ToolButton {
             id: polygonButton
-            x: 117
+            x: 145
             y: 0
             width: 28
             height: 28
@@ -834,6 +889,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     curveButton.checked=false
@@ -849,7 +905,7 @@ Window {
 
         ToolButton {
             id: curveButton
-            x: 145
+            x: 180
             y: 0
             width: 28
             height: 28
@@ -862,6 +918,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -877,7 +934,7 @@ Window {
         //选中并移动和放缩
         ToolButton {
             id: selectButton
-            x: 180
+            x: 208
             y: 0
             width: 28
             height: 28
@@ -890,6 +947,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -905,7 +963,7 @@ Window {
         //选中并旋转
         ToolButton {
             id: rotateButton
-            x: 208
+            x: 236
             y: 0
             width: 28
             height: 28
@@ -918,6 +976,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -932,7 +991,7 @@ Window {
         }
         ToolButton {
             id: scaleButton
-            x: 236
+            x: 260
             y: 0
             width: 28
             height: 28
@@ -945,6 +1004,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -970,7 +1030,7 @@ Window {
         //裁剪按钮
         ToolButton {
             id: cutButton
-            x: 264
+            x: 294
             y: 0
             width: 28
             height: 28
@@ -983,6 +1043,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -998,7 +1059,7 @@ Window {
         //视图平移按钮
         ToolButton {
             id: viewEditButton
-            x: 306
+            x: 336
             y: 0
             width: 28
             height: 28
@@ -1011,6 +1072,7 @@ Window {
             onClicked: {
                 if(!checked){
                     checked=true
+                    pointButton.checked=false
                     lineButton.checked=false
                     ellipseButton.checked=false
                     polygonButton.checked=false
@@ -1187,7 +1249,7 @@ Window {
         onNewGraphics: {
             drawarea_motion.width=w
             drawarea_motion.height=h
-            fillStyleDef=bagc
+            //fillStyleDef=bagc
             console.log(bagc)
             jsonGraphics={"name": "神里绫华", "type": "canvas", "width": w, "height": h, "color": String(bagc), "subnodes": []}
             drawarea_canvas.requestPaint()
@@ -1249,18 +1311,19 @@ Window {
         if(myIndex===itemArray)
             return 神里绫华
     }
-
+//QML定义神里绫华类（文件管理）入口点
     Kamisato_Ayaka {
         id: file_manager
     }
-
+//QML定义宵宫类（颜色选取）入口点
     Yoimiya {
         id: color_manager
     }
+//QML定义雷电将军类（导出到图片）入口点
     Raiden_Shogun {
         id: file_expoter
     }
-
+//点击保存按钮时使用的逻辑
     function saveCMD(){
         file_manager.jSONStr=JSON.stringify(jsonGraphics, null, 4)
         file_manager.saveFileButtonClicked()

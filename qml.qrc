@@ -28,5 +28,7 @@
         <file>img/scale_selected.svg</file>
         <file>img/scale.svg</file>
         <file>img/icon.svg</file>
+        <file>img/point.svg</file>
+        <file>img/point_selected.svg</file>
     </qresource>
 </RCC>

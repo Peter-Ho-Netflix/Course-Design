@@ -26,6 +26,7 @@ Window {
             id: listView
             property var mModel: {
                 var jstr=file_manager.nowReadJSON("./properties.json");
+                console.log("settings:", jstr)
                 var myModel=JSON.parse(jstr);
                 return myModel
             }

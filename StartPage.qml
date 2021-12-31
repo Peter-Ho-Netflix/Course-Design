@@ -74,7 +74,7 @@ Rectangle {
         y: 316
         width: 36
         height: 18
-        text: qsTr("版本 1.0.0")
+        text: qsTr("版本 1.1.0")
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 16

@@ -197,6 +197,8 @@ Rectangle{
                                 source: {
                                     switch(modelData.type)
                                     {
+                                    case "point":
+                                        return currentItem===list_itemrow.itemIndex?"img/point_selected.svg": "img/point.svg"
                                     case "line":
                                         return currentItem===list_itemrow.itemIndex?"img/line_selected.svg": "img/line.svg"
                                     case "ellipse":
@@ -229,6 +231,8 @@ Rectangle{
                                     anchors.margins: 4
                                     anchors.fill: parent
                                     source: item_button.checked? "img/eyes_selected.svg": "img/eyes.svg"
+                                }
+                                onCheckedChanged: {
                                 }
                             }
                         }
@@ -286,3 +290,9 @@ Rectangle{
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}D{i:1}D{i:2}
+}
+##^##*/
